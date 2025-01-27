@@ -1,18 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const { sendLeavingMessage } = require('./cancel');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const accessToken = 'EAAXan8ruigABO41RZBqSmvQZBZB98m15zZBjMnZChPL0qHLJYvadSSRB4LCqZBDBsyO3v5OA9KUEyperyoNfFtwoVZAEWRXDeMGsZBlvlOyUYZBJWVdId95ouRNtMZCq1ZCFZBdZB9j17rcJhhjbg0x2qcjHvoc7BtNOqjMaQKYyyqiJkdfrnkpUp3x4VwtZAqZAfoZBlgEZA0ZAjpjii6996Sk1i4Au5f0wqqnSSqnkDCOeS1ZAYBWXVrZAfzuz43vr';
-const phoneNumberId = '203335022860521';
+
+ const {GRAPH_API_TOKEN,WHATSAPP_SEND_MESSAGE_API} = process.env;
+
 
 app.use(bodyParser.json());
 
 const validNumbers = ['8441998713', '8441998714', '844199871'];
 
-app.post('/webhook', (req, res) => {
+// Make the route handler async
+app.post('/webhook', async (req, res) => {
     const incomingMessage = req.body;
     console.log('Incoming Message:', incomingMessage);
 
@@ -21,146 +24,66 @@ app.post('/webhook', (req, res) => {
 
         if (messages && messages.length > 0) {
             const from = messages[0].from;
-            const text = messages[0].text ? messages[0].text.body : null;
+            const text = messages[0].text.body;
+            const buttonPayload = messages[0].interactive?.button_reply?.id;
 
             console.log(`Message from ${from}: ${text}`);
 
-            let reply = 'Welcome. Please enter the valid 10 digits mobile number';
-
-            // Check if the number is valid
-            if (validNumbers.includes(from)) {
-                reply = "Please select an option from below:";
-
-                // Respond to the user with interactive buttons
-                axios.post(
-                    `https://graph.facebook.com/v14.0/${phoneNumberId}/messages`,
-                    {
-                        messaging_product: 'whatsapp',
-                        to: from,
-                        "type": "interactive",
-                        "interactive": {
-                            "type": "button",
-                            "body": {
-                                "text": reply
-                            },
-                            "action": {
-                                "buttons": [
-                                    {
-                                        "type": "reply",
-                                        "reply": {
-                                            "id": "btn-1",
-                                            "title": "Add numbers"
-                                        }
-                                    },
-                                    {
-                                        "type": "reply",
-                                        "reply": {
-                                            "id": "btn-2",
-                                            "title": "Cancel"
-                                        }
-                                    },
-                                    {
-                                        "type": "reply",
-                                        "reply": {
-                                            "id": "btn-3",
-                                            "title": "Third"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                ).then(response => {
-                    console.log('Response sent:', response.data);
-                }).catch(error => {
-                    console.error('Error sending response:', error.response ? error.response.data : error.message);
-                });
-
-            } else {
-                // If the number is not valid
-                reply = "The number is not valid. Please enter a valid 10-digit number.";
-
-                axios.post(
-                    `https://graph.facebook.com/v14.0/${phoneNumberId}/messages`,
-                    {
-                        messaging_product: 'whatsapp',
-                        to: from,
-                        text: {
-                            body: reply,
-                        }
-                    },
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                ).then(response => {
-                    console.log('Response sent:', response.data);
-                }).catch(error => {
-                    console.error('Error sending response:', error.response ? error.response.data : error.message);
-                });
-            }
-        }
-    }
-
-    res.sendStatus(200);
-});
-
-// Handle button responses
-app.post('/button-response', (req, res) => {
-    const incomingButtonResponse = req.body;
-    console.log('Button Response:', incomingButtonResponse);
-
-    if (incomingButtonResponse.entry && incomingButtonResponse.entry[0].changes) {
-        const button = incomingButtonResponse.entry[0].changes[0].value.messages[0].interactive;
-
-        if (button) {
-            const from = button.from;
-            const buttonId = button.button.id;
-
-            console.log(`Button response from ${from}: ${buttonId}`);
-
-            // Handle different button responses
-            let reply = '';
-            switch (buttonId) {
-                case 'btn-1':
-                    reply = "You selected 'Add numbers'. Please provide the numbers you'd like to add.";
-                    break;
-                case 'btn-2':
-                    reply = "You selected 'Cancel'. Operation has been canceled.";
-                    break;
-                case 'btn-3':
-                    reply = "You selected 'Third'. Please provide more details.";
-                    break;
-                default:
-                    reply = "Invalid selection.";
+            if (buttonPayload === 'btn-2') {
+                await sendLeavingMessage(from);  
             }
 
-            // Send response to user based on the button selection
+          
             axios.post(
-                `https://graph.facebook.com/v14.0/${phoneNumberId}/messages`,
+                `https://graph.facebook.com/v14.0/${WHATSAPP_SEND_MESSAGE_API}/messages`,
                 {
                     messaging_product: 'whatsapp',
                     to: from,
-                    text: { body: reply }
+                    type: 'interactive',
+                    interactive: {
+                        type: 'button',
+                        body: {
+                            text: 'Please enter a valid 10-digit mobile number.',
+                        },
+                        action: {
+                            buttons: [
+                                {
+                                    type: 'reply',
+                                    reply: {
+                                        id: 'btn-1',
+                                        title: 'Add Numbers',
+                                    },
+                                },
+                                {
+                                    type: 'reply',
+                                    reply: {
+                                        id: 'btn-2',
+                                        title: 'Cancel',
+                                    },
+                                },
+                                {
+                                    type: 'reply',
+                                    reply: {
+                                        id: 'btn-3',
+                                        title: 'Third Option',
+                                    },
+                                },
+                            ],
+                        },
+                    },
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${accessToken}`,
+                        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
                         'Content-Type': 'application/json',
                     },
                 }
-            ).then(response => {
+            )
+            .then(response => {
                 console.log('Response sent:', response.data);
-            }).catch(error => {
-                console.error('Error sending response:', error.response ? error.response.data : error.message);
+            })
+            .catch(error => {
+                console.error('Error sending response:', error.response?.data || error.message);
             });
         }
     }
