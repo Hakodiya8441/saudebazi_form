@@ -1,6 +1,6 @@
 
 const axios = require('axios');
-
+// const { response } = require('express');
 
 const {GRAPH_API_TOKEN,WHATSAPP_SEND_MESSAGE_API} = process.env;
 
@@ -8,7 +8,7 @@ const {GRAPH_API_TOKEN,WHATSAPP_SEND_MESSAGE_API} = process.env;
 const sendLeavingMessage = async (from) => {
     try {
         const response = await axios.post(
-            `https://graph.facebook.com/v14.0/${WHATSAPP_SEND_MESSAGE_API}/messages`,
+            WHATSAPP_SEND_MESSAGE_API,
             {
                 messaging_product: 'whatsapp',
                 to: from,
