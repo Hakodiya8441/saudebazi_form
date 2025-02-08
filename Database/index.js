@@ -4,11 +4,12 @@ const commodityRoutes = require("./Routes/CommodityRoutes");
 const customerRoutes = require("./Routes/CustomerRoutes");
 const commoditySkuRoutes = require("./Routes/SkuRoutes");
 const feedbackRoutes = require("./Routes/FeedbackRoutes");
-
+const middleware = require("./auth")
 
 
 const app = express();
 
+app.use(middleware)
 app.use(express.json());
 
 app.use("/api", commodityRoutes);

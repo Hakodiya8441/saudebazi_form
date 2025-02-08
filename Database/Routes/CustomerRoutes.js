@@ -1,12 +1,12 @@
 const express = require('express');
-
+const middleware = require("../auth.js")
 const Customer = require("../Models/CustomerSchema");
 // const CustomerSchema = require('../Models/CustomerSchema');
 
 const router = express.Router();
 
 //  POST: Add a new Customer
-router.post("/add-customer", async (req, res) => {
+router.post("/add-customer",middleware, async (req, res) => {
     try {
       const {
         shop_name,
