@@ -5,7 +5,7 @@ const customerRoutes = require("./Routes/CustomerRoutes");
 const commoditySkuRoutes = require("./Routes/SkuRoutes");
 const feedbackRoutes = require("./Routes/FeedbackRoutes");
 const middleware = require("./auth")
-
+const timesloteRoute = require("./Routes/WeekDaysRoutes");
 
 const app = express();
 
@@ -16,5 +16,6 @@ app.use("/api", commodityRoutes);
 app.use("/api",customerRoutes);
 app.use("/api",commoditySkuRoutes);
 app.use("/api",feedbackRoutes);
+app.use('/api',timesloteRoute)
 
 app.listen(5000,()=>console.log("Server running on port 5000"))
