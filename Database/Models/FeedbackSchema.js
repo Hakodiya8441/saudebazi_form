@@ -17,7 +17,7 @@ const FeedbackSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
-        sku: {
+        sku_name: {
           type: String,
           required: true,
         },
