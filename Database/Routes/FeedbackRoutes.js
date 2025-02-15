@@ -9,7 +9,7 @@ router.post("/add-feedback", async(req,res)=>{
 try{
     const {customer_id , feedback , feedbacks, additional_comments} = req.body;
 
-    if (!customer_id || !feedback || !feedbacks) {
+    if (!customer_id || !feedback || !feedbacks || feedbacks.length === 0) {
         return res.status(400).json({ error: "Missing required fields or empty feedbacks array." });
       }
 
