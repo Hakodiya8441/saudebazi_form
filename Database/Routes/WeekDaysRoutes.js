@@ -74,6 +74,7 @@ router.get("/timeslots", (req, res) => {
 
     timeSlots.push({
       date: today.toISOString().split("T")[0],
+      
       slots: availableSlots,
     });
   }
