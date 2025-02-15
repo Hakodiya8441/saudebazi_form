@@ -6,17 +6,20 @@ const router = express.Router();
 router.get("/orderhistory/:contact", async (req, res) => {
   const contactNumber = req.params.contact;
   try {
-    const order = await OrderHistory.find({
-      contact_details: req.params.contact,
-    });
-    if (!order) {
+    const orders = await OrderHistory.find({
+      contact_details: contactNumber,
+    }).sort({ order_date: -1 }); // Sort in descending order
+
+    if (!orders || orders.length === 0) {
       return res.status(404).json({ error: "No order found for this contact" });
     }
-    res.json(order);
+    
+    res.json(orders);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 // POST: Add a new order (Ensures unique contact)
 router.post("/orderhistory", async (req, res) => {
