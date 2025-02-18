@@ -19,7 +19,7 @@ const GeneratTimeSlots = (date) => {
 //get availabe time slots
 
 router.get("/timeslots", (req, res) => {
-  // TODO: understand this piece of code
+  
   const GeneratTimeSlots = (date) => {
     const slots = [
       { start_time: "10:00" },
@@ -35,7 +35,13 @@ router.get("/timeslots", (req, res) => {
   const BookedSlotes = [
     { date: "2025-02-12", start_time: "12:00" }, // Example booked slots
   ];
-  const dayId = parseInt(req.query.day);
+  const day = req.query.day;
+  const dayId =
+    req.query.day === "tomorrow"
+      ? 2
+      : req.query.day === "dayAfterTomorrow"
+      ? 3
+      : 1;
   const today = new Date();
   const timeSlots = [];
 
@@ -57,7 +63,6 @@ router.get("/timeslots", (req, res) => {
     // Get today's available slots based on current time
     const now = new Date();
     const currentHour = now.getHours();
-
     const availableSlots = GeneratTimeSlots(today)
       .filter((slot) => {
         const [slotHour] = slot.start_time.split(":").map(Number);
@@ -74,7 +79,7 @@ router.get("/timeslots", (req, res) => {
 
     timeSlots.push({
       date: today.toISOString().split("T")[0],
-      
+
       slots: availableSlots,
     });
   }
