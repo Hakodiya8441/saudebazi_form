@@ -16,12 +16,12 @@ const FeedbackSchema = new mongoose.Schema(
         commodity: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Commodity",
-          // required: true,
+          required: true,
         },
         sku_name: {
           type: mongoose.Schema.Types.ObjectId,
           ref:"CommoditySku",
-          // required: true,
+          required: true,
         },
         stock_position: { 
           type: String,
