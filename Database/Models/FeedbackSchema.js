@@ -5,7 +5,7 @@ const FeedbackSchema = new mongoose.Schema(
     customer_id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "Customer",
+      // ref: "Customer",
     },
     feedback: {
       type: String,
@@ -14,12 +14,14 @@ const FeedbackSchema = new mongoose.Schema(
     feedbacks: [
       {
         commodity: {
-          type: String,
-          required: true,
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Commodity",
+          // required: true,
         },
         sku_name: {
-          type: String,
-          required: true,
+          type: mongoose.Schema.Types.ObjectId,
+          ref:"CommoditySku",
+          // required: true,
         },
         stock_position: { 
           type: String,
