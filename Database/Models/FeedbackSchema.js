@@ -25,7 +25,7 @@ const FeedbackSchema = new mongoose.Schema(
         },
         stock_position: { 
           type: String,
-          required: true,
+          // required: true,
         },
         target_price: {
           type: String,
