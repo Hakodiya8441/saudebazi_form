@@ -29,7 +29,7 @@ const FeedbackSchema = new mongoose.Schema(
         },
         target_price: {
           type: String,
-          required: true,
+          // required: true,
         },
         comments: {
           type: String,
