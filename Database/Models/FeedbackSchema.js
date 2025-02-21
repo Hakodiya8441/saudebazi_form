@@ -28,7 +28,7 @@ const FeedbackSchema = new mongoose.Schema(
           required: true,
         },
         target_price: {
-          type: Number,
+          type: String,
           required: true,
         },
         comments: {
