@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const Feedback = require("../Models/FeedbackSchema");
 const Customer = require("../Models/CustomerSchema");
 const Commodity = require("../Models/CommoditySchema");
@@ -10,16 +9,12 @@ const router = express.Router();
 // POST API - Submit New Feedback
 router.post("/add-feedback", async (req, res) => {
   try {
+    console.log("Incoming Request Body:", req.body);
     const { customer_id, feedback, feedbacks, additional_comment } = req.body;
 
     // Validate required fields
-    if (!customer_id || !feedback || !feedbacks || !Array.isArray(feedbacks)) {
-      return res.status(400).json({ message: "Missing required fields or feedbacks must be an array" });
-    }
-
-    // Validate customer ID format
-    if (!mongoose.Types.ObjectId.isValid(customer_id)) {
-      return res.status(400).json({ message: "Invalid customer ID" });
+    if (!customer_id || !feedback || !Array.isArray(feedbacks) || feedbacks.length === 0) {
+      return res.status(400).json({ message: "Missing required fields or feedbacks should be an array" });
     }
 
     // Validate customer exists
@@ -28,41 +23,29 @@ router.post("/add-feedback", async (req, res) => {
       return res.status(404).json({ message: "Customer not found" });
     }
 
+    // Validate feedbacks array
     let validatedFeedbacks = [];
 
-    for (const item of feedbacks) {
+    for (let item of feedbacks) {
       const { commodity, sku_name, stock_position, target_price, comments } = item;
 
-      if (!commodity || !sku_name || !stock_position || target_price === undefined) {
+      if (!commodity || !sku_name || stock_position === undefined || target_price === undefined) {
         return res.status(400).json({ message: "Invalid feedback item structure" });
       }
 
-      // Validate commodity and SKU IDs
-      if (!mongoose.Types.ObjectId.isValid(commodity) || !mongoose.Types.ObjectId.isValid(sku_name)) {
-        return res.status(400).json({ message: "Invalid commodity or SKU ID" });
-      }
-
-      // Validate commodity and SKU exist
-      const [commodityExists, skuExists] = await Promise.all([
-        Commodity.findById(commodity),
-        CommoditySku.findById(sku_name),
-      ]);
-
+      // Validate commodity exists
+      const commodityExists = await Commodity.findById(commodity);
       if (!commodityExists) {
         return res.status(404).json({ message: `Commodity not found: ${commodity}` });
       }
 
+      // Validate SKU exists
+      const skuExists = await CommoditySku.findById(sku_name);
       if (!skuExists) {
         return res.status(404).json({ message: `SKU not found: ${sku_name}` });
       }
 
-      validatedFeedbacks.push({
-        commodity,
-        sku_name,
-        stock_position,
-        target_price,
-        comments,
-      });
+      validatedFeedbacks.push({ commodity, sku_name, stock_position, target_price, comments });
     }
 
     // Create new feedback entry
@@ -73,11 +56,13 @@ router.post("/add-feedback", async (req, res) => {
       additional_comment,
     });
 
-    await newFeedback.save();
+    const savedFeedback = await newFeedback.save();
+
+    console.log("Saved Feedback:", savedFeedback);
 
     res.status(201).json({
       message: "Feedback submitted successfully",
-      data: newFeedback,
+      data: savedFeedback,
     });
   } catch (error) {
     console.error("Error submitting feedback:", error);
@@ -89,15 +74,16 @@ router.post("/add-feedback", async (req, res) => {
 router.get("/feedbacks", async (req, res) => {
   try {
     const customerId = req.query.customerId;
-
-    // Validate customer ID if provided
-    if (customerId && !mongoose.Types.ObjectId.isValid(customerId)) {
-      return res.status(400).json({ message: "Invalid customer ID" });
+    if (!customerId) {
+      return res.status(400).json({ message: "Customer ID is required" });
     }
 
-    const filter = customerId ? { customer_id: customerId } : {};
+    const feedbacks = await Feedback.find({ customer_id: customerId });
+    
+    if (feedbacks.length === 0) {
+      return res.status(404).json({ message: "No feedback found for this customer" });
+    }
 
-    const feedbacks = await Feedback.find(filter);
     res.status(200).json(feedbacks);
   } catch (error) {
     console.error("Error fetching feedbacks:", error);
