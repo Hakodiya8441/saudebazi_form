@@ -25,7 +25,6 @@ router.post("/add-feedback", async (req, res) => {
 
     // Validate feedbacks array
     let validatedFeedbacks = [];
-
     for (let item of feedbacks) {
       const { commodity, sku_name, stock_position, target_price, comments } = item;
 
@@ -48,45 +47,44 @@ router.post("/add-feedback", async (req, res) => {
       validatedFeedbacks.push({ commodity, sku_name, stock_position, target_price, comments });
     }
 
-    // Create new feedback entry
-    const newFeedback = new Feedback({
-      customer_id,
-      feedback,
-      feedbacks: validatedFeedbacks,
-      additional_comment,
-    });
+    // Check if the customer already has feedback
+    const existingFeedback = await Feedback.findOne({ customer_id });
 
-    const savedFeedback = await newFeedback.save();
+    if (existingFeedback) {
+      // Update existing feedback by pushing new feedbacks into the array
+      const updatedFeedback = await Feedback.findOneAndUpdate(
+        { customer_id },
+        { 
+          $push: { feedbacks: { $each: validatedFeedbacks } }, 
+          $set: { additional_comment: additional_comment || existingFeedback.additional_comment } 
+        },
+        { new: true }
+      );
 
-    console.log("Saved Feedback:", savedFeedback);
+      console.log("Updated Feedback:", updatedFeedback);
+      return res.status(200).json({
+        message: "Feedback updated successfully",
+        data: updatedFeedback,
+      });
+    } else {
+      // Create a new feedback entry if customer has no previous feedback
+      const newFeedback = new Feedback({
+        customer_id,
+        feedback,
+        feedbacks: validatedFeedbacks,
+        additional_comment,
+      });
 
-    res.status(201).json({
-      message: "Feedback submitted successfully",
-      data: savedFeedback,
-    });
+      const savedFeedback = await newFeedback.save();
+      console.log("New Feedback Saved:", savedFeedback);
+
+      return res.status(201).json({
+        message: "Feedback submitted successfully",
+        data: savedFeedback,
+      });
+    }
   } catch (error) {
     console.error("Error submitting feedback:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-// GET API - Fetch All Feedbacks
-router.get("/feedbacks", async (req, res) => {
-  try {
-    const customerId = req.query.customerId;
-    if (!customerId) {
-      return res.status(400).json({ message: "Customer ID is required" });
-    }
-
-    const feedbacks = await Feedback.find({ customer_id: customerId });
-    
-    if (feedbacks.length === 0) {
-      return res.status(404).json({ message: "No feedback found for this customer" });
-    }
-
-    res.status(200).json(feedbacks);
-  } catch (error) {
-    console.error("Error fetching feedbacks:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
