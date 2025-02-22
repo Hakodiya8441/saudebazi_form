@@ -82,6 +82,15 @@ router.get("/skus", async (req, res) => {
     }
   });
 
+router.get("/skus/:name",async(req,res)=>{
+    try{
+      const name = req.params.name;
+      const commodities = await CommoditySku.find({sku_name:name});
+    }
+    catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+})
 
 
 
