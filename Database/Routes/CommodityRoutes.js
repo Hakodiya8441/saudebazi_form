@@ -37,7 +37,7 @@ router.post("/add-commodity", async (req, res) => {
   router.get("/commodities:id",async(req,res)=>{
     try{
       const id = req.params.id;
-      const commodites = await Commodity.find({_id:id});
+      const commodites = await Commodity.find({commodity_name:id});
       res.status(200).json(commodites);
     }
     catch(error){
