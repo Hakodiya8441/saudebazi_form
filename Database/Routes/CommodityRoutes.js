@@ -34,5 +34,15 @@ router.post("/add-commodity", async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
+  router.get("/commodities:id",async(req,res)=>{
+    try{
+      const id = req.params.id;
+      const commodites = await Commodity.find(id);
+      res.status(200).json(commodites);
+    }
+    catch(error){
+      res.status(500).json({ error: error.message });
+    }
+  })
   
   module.exports = router;
