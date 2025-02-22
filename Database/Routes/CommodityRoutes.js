@@ -34,10 +34,10 @@ router.post("/add-commodity", async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
-  router.get("/commodities:id",async(req,res)=>{
+  router.get("/commodities/:name",async(req,res)=>{
     try{
-      const id = req.params.id;
-      const commodites = await Commodity.find({commodity_name:id});
+      const name = req.params.name;
+      const commodites = await Commodity.find({commodity_name:name});
       res.status(200).json(commodites);
     }
     catch(error){
