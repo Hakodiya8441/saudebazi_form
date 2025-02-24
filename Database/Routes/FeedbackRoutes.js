@@ -34,16 +34,16 @@ router.post("/add-feedback", async (req, res) => {
       }
 
       // Validate commodity exists
-      const commodityExists = await Commodity.findById(commodity);
-      if (!commodityExists) {
-        return res.status(404).json({ message: `Commodity not found: ${commodity}` });
-      }
+      // const commodityExists = await Commodity.find({ commodity_name: commodity });
+      // if (!commodityExists) {
+      //   return res.status(404).json({ message: `Commodity not found: ${commodity}` });
+      // }
 
       // Validate SKU exists
-      const skuExists = await CommoditySku.findById(sku_name);
-      if (!skuExists) {
-        return res.status(404).json({ message: `SKU not found: ${sku_name}` });
-      }
+      // const skuExists = await CommoditySku.find({ sku_name });
+      // if (!skuExists) {
+      //   return res.status(404).json({ message: `SKU not found: ${sku_name}` });
+      // }
 
       validatedFeedbacks.push({ commodity, sku_name, stock_position, target_price, comments });
     }
@@ -55,9 +55,9 @@ router.post("/add-feedback", async (req, res) => {
       // Update existing feedback by pushing new feedbacks into the array
       const updatedFeedback = await Feedback.findOneAndUpdate(
         { customer_id },
-        { 
-          $push: { feedbacks: { $each: validatedFeedbacks } }, 
-          $set: { additional_comment: additional_comment || existingFeedback.additional_comment } 
+        {
+          $push: { feedbacks: { $each: validatedFeedbacks } },
+          $set: { additional_comment: additional_comment || existingFeedback.additional_comment }
         },
         { new: true }
       );
