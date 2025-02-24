@@ -39,4 +39,4 @@ const commoditySkuPricingSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("CommoditySku", commoditySkuPricingSchema);
+module.exports = mongoose.model("CommodityPricingSku", commoditySkuPricingSchema);

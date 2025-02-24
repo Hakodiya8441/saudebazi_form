@@ -1,6 +1,6 @@
 const express = require('express');
 const CommoditySku = require("../Models/SkuSchema")
-const Commodity_Sku_Schema = require("../Models/CommoditySkuSchema.js")
+const Commodity_Sku_Schema = require("../Models/CommoditySkuSchema")
 
 const router = express.Router();
 
