@@ -23,11 +23,20 @@ const commoditySkuSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-      commodity_name: {
-        type: String,
-        required: true, 
-      },
-      
+    min_bag_quantity: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
+    max_bag_quantity: {
+      type: Number,
+      required: true,
+      default: 1000,
+    },
+    commodity_name: {
+      type: String,
+      required: true, 
+    }
   },
   {
     timestamps: true,

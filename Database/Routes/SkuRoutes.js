@@ -50,7 +50,7 @@ router.post("/add-sku", async (req, res) => {
 //       console.log(CommoditySku)
   
       //  Build dynamic filter based on query parameters
-     
+    
   
     //   const skus = await CommoditySku.find(filter);
 
