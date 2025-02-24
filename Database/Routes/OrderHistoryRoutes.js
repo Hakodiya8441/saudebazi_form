@@ -7,8 +7,9 @@ router.get("/orderhistory/:contact", async (req, res) => {
   const contactNumber = req.params.contact;
   try {
     const orders = await OrderHistory.find({
-      contact_details: contactNumber,
-    }).sort({ order_date: -1 }); // Sort in descending order
+      contact_details: contactNumber},
+      {_id: 0}
+    ).sort({ order_date: -1 }); // Sort in descending order
 
     if (!orders || orders.length === 0) {
       return res.status(404).json({ error: "No order found for this contact" });
