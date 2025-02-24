@@ -1,5 +1,6 @@
 const express = require('express');
 const CommoditySku = require("../Models/SkuSchema")
+const CommoditySkuSchema = require("../Models/CommoditySkuSchema.js")
 
 const router = express.Router();
 
@@ -93,7 +94,15 @@ router.get("/skus/:name",async(req,res)=>{
     }
 })
 
-
+router.get("/commoditysku",async(req,res)=>{
+  try{
+    const data = await CommoditySkuSchema.find();
+    res.status(200).json(data);
+  }
+  catch(error){
+    res.status(500).json({error:error.message})
+  }
+})
 
 
 
