@@ -1,5 +1,5 @@
 const express = require("express");
-const CommoditySkuPricing = require("../Models/CommodityPricingSchema");
+const CommoditySkuPricing = require("../Models/CommoditySkuSchema");
 const router = express.Router();
 
 // POST API - Add new SKU pricing
