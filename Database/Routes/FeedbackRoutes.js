@@ -3,6 +3,7 @@ const Feedback = require("../Models/FeedbackSchema");
 const Customer = require("../Models/CustomerSchema");
 const Commodity = require("../Models/CommoditySchema");
 const CommoditySku = require("../Models/SkuSchema");
+const OrderHistory = require("../Models/OrderHistorySchema");
 
 const router = express.Router();
 
@@ -89,4 +90,38 @@ router.post("/add-feedback", async (req, res) => {
   }
 });
 
+// GET API - Join OrderHistory, Customers, and Feedbacks
+router.get("/ordersfeedback/:contact", async (req, res) => {
+  try {
+    const contactNumber = req.params.contact;
+
+    // 1️⃣ Find Customer from OrderHistory (using contact details)
+    const customer = await Customer.findOne({
+      $or: [
+        { contact_1: contactNumber },
+        { contact_2: contactNumber },
+        { contact_3: contactNumber }
+      ]
+    });
+
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found in the database." });
+    }
+
+    // 2️⃣ Find Feedback using customer_id
+    const feedbackData = await Feedback.findOne({ customer_id: customer._id });
+
+    if (!feedbackData) {
+      return res.status(404).json({ message: "No feedback found for this customer." });
+    }
+
+    // 3️⃣ Return only the feedbacks array
+    return res.status(200).json({
+      feedbacks: feedbackData.feedbacks
+    });
+  } catch (error) {
+    console.error("Error fetching feedbacks:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 module.exports = router;
