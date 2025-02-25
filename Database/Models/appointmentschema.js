@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const AppointmentSchema = mongoose.Schema({
     Shop_name:{
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
         // ref: "customer",
     },
