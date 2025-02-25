@@ -21,7 +21,7 @@ const FeedbackSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
-        stock_position: { 
+        stock_position: {
           type: String,
           required: true,
         },
@@ -34,12 +34,20 @@ const FeedbackSchema = new mongoose.Schema(
         },
       },
     ],
+    date: {
+      type: String,
+      required: true
+    },
+    time_slot: {
+      type: String,
+      required: true
+    },
     additional_comment: {
       type: String,
     },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 

@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/add-feedback", async (req, res) => {
   try {
     console.log("Incoming Request Body:", req.body);
-    const { customer_id, feedback, feedbacks, additional_comment } = req.body;
+    const { customer_id, feedback, feedbacks, date, time_slot, additional_comment } = req.body;
 
     // Validate required fields
     if (!customer_id || !feedback || !Array.isArray(feedbacks) || feedbacks.length === 0) {
@@ -73,6 +73,8 @@ router.post("/add-feedback", async (req, res) => {
         customer_id,
         feedback,
         feedbacks: validatedFeedbacks,
+        date,
+        time_slot,
         additional_comment,
       });
 
