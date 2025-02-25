@@ -9,6 +9,7 @@ const timesloteRoute = require("./Routes/WeekDaysRoutes");
 const orderRoutes = require("./Routes/OrderHistoryRoutes");
 const pricingRoutes = require("./Routes/CommodityPricing");
 const moment = require("moment-timezone");
+const appointmentroutes = require("./Routes/appointmentroutes")
 
 const app = express();
 
@@ -28,5 +29,6 @@ app.use("/api", feedbackRoutes);
 app.use("/api", timesloteRoute);
 app.use("/api", orderRoutes);
 app.use("/api", pricingRoutes);
+app.use("/api", appointmentroutes)
 
 app.listen(5000, () => console.log("Server running on port 5000"));
