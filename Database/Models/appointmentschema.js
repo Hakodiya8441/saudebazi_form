@@ -5,7 +5,7 @@ const AppointmentSchema = mongoose.Schema({
     Shop_name:{
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "customer",
+        // ref: "customer",
     },
     Date:{
         type: String,
