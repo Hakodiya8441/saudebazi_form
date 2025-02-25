@@ -80,7 +80,7 @@ router.post("/add-feedback", async (req, res) => {
 
       const savedFeedback = await newFeedback.save();
       console.log("New Feedback Saved:", savedFeedback);
-
+      console.log(req.body)
       return res.status(201).json({
         message: "Feedback submitted successfully",
         data: savedFeedback,
