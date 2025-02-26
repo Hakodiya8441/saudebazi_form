@@ -105,5 +105,26 @@ router.get("/customers", async (req, res) => {
   }
 });
 
+router.put("/add-shop",async(req,resp)=>{
+  try{
+    const {_id, shop_name, visiting_card,shop_photo} = req.body;
+
+    if(!_id){
+      return resp.status(400).json({message:"shop id (_id) is required"})
+    }
+    const response = await Customer.findByIdAndUpdate(
+      _id,
+      { $set: {shop_name,visiting_card, shop_photo}}
+    );
+    if(!response){
+      return resp.status(404).json({message:"shop not found"})
+    }
+    resp.status(200).json({message : "shop updated successfully", data: response})
+  }
+  catch(error){
+    console.error("error updatinf shop: ",error)
+    resp.status(500).json({message: "internal server error"})
+  }
+})
 module.exports = router;
 

@@ -44,6 +44,12 @@ const CustomerSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
     },
+    visiting_card: {
+      type: String,
+    },
+    shop_photo: {
+      type: String,
+    }
   },
   {
     timestamps: true,
