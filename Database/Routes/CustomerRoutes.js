@@ -26,7 +26,10 @@ router.post("/add-customer",middleware, async (req, res) => {
       }
   
       // Check if `contact_1` is unique
-      const existingCustomer = await Customer.findOne({ contact_1 });
+      const existingCustomer = await Customer.findOne({
+        $or: [{ contact_1 }, { contact_2 }, { contact_3 }]
+      });
+      
       if (existingCustomer) {
         return res.status(400).json({ error: "Contact number already exists." });
       }
