@@ -85,7 +85,7 @@ router.post("/add-customer", middleware, async (req, res) => {
 //   })
 router.get("/customers", async (req, res) => {
   try {
-    const contact = Number(req.query.contact);
+    const contact = req.query.contact;
 
 
     console.log(contact)
