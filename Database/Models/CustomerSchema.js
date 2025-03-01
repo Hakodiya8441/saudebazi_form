@@ -30,12 +30,12 @@ const CustomerSchema = new mongoose.Schema(
       maxlength: 10,
     },
     contact_2: {
-      type: String,
+      type: Number,
       minlength: 10,
       maxlength: 10,
     },
     contact_3: {
-      type: String,
+      type: Number,
       minlength: 10,
       maxlength: 10,
     },
