@@ -11,19 +11,23 @@ const FeedbackSchema = new mongoose.Schema(
       {
         commodity: {
           type: String,
-          required: true,
+          default:"not entered"
+          // required: true,
         },
         sku_name: {
           type: String,
-          required: true,
+          default:"not entered"
+          // required: true,
         },
         stock_position: {
           type: String,
-          required: true,
+          default:"not entered"
+          // required: true,
         },
         target_price: {
           type: String,
-          required: true,
+          default:"not entered"
+          // required: true,
         },
         comments: {
           type: String,
@@ -32,11 +36,11 @@ const FeedbackSchema = new mongoose.Schema(
     ],
     date: {
       type: String,
-      required: true
+      // required: true
     },
     time_slot: {
       type: String,
-      required: true
+      // required: true
     },
     additional_comment: {
       type: String,
