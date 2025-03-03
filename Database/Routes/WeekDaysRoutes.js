@@ -34,7 +34,7 @@ const bookedSlots = [
 
 router.get("/timeslots", (req, res) => {
   const day = req.query.day;
-  const dayId = day === "tomorrow" ? 2 : day === "dayAfterTomorrow" ? 3 : 1;
+  const dayId = day === "tomorrow" ? 2 : day === "DayAfterTomorrow" ? 3 : 1;
 
   // Get the current date using moment (timezone is already set in index.js)
   const today = moment();
