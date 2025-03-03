@@ -36,10 +36,12 @@ const FeedbackSchema = new mongoose.Schema(
     ],
     date: {
       type: String,
+      default:"not entered"
       // required: true
     },
     time_slot: {
       type: String,
+      default:"not entered"
       // required: true
     },
     additional_comment: {
