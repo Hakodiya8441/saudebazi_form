@@ -7,10 +7,6 @@ const FeedbackSchema = new mongoose.Schema(
       required: true,
       // ref: "Customer",
     },
-    feedback: {
-      type: String,
-      required: true,
-    },
     feedbacks: [
       {
         commodity: {
