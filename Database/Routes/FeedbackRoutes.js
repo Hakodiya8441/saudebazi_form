@@ -126,4 +126,19 @@ router.get("/ordersfeedback/:contact", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+router.put("/add-feedback", async (req, resp) => {
+  try {
+    const { customer_id, date, time_slot } = req.body;
+    const customer_exists = await Feedback.findOne({ customer_id });
+    if (!customer_exists) {
+      resp.status(401).json({ message: "customer not found" })
+    }
+    const patched = await Feedback.findOneAndUpdate({ customer_id }, { date, time_slot })
+    return resp.status(201).json(patched);
+  }
+  catch (error) {
+    resp.json({message:error});
+  }
+})
 module.exports = router;
