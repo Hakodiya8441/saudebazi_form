@@ -14,9 +14,9 @@ router.post("/add-feedback", async (req, res) => {
     const { customer_id, feedback, feedbacks, date, time_slot, additional_comment } = req.body;
 
     // Validate required fields
-    if (!customer_id || !feedback || !Array.isArray(feedbacks) || feedbacks.length === 0) {
-      return res.status(400).json({ message: "Missing required fields or feedbacks should be an array" });
-    }
+    // if (!customer_id || feedback || Array.isArray(feedbacks) || feedbacks.length === 0) {
+    //   return res.status(400).json({ message: "Missing required fields or feedbacks should be an array" });
+    // }
 
     // Validate customer exists
     const customerExists = await Customer.findById(customer_id);
@@ -29,9 +29,9 @@ router.post("/add-feedback", async (req, res) => {
     for (let item of feedbacks) {
       const { commodity, sku_name, stock_position, target_price, comments } = item;
 
-      if (!commodity || !sku_name || stock_position === undefined || target_price === undefined) {
-        return res.status(400).json({ message: "Invalid feedback item structure" });
-      }
+      // if (!commodity || !sku_name || stock_position === undefined || target_price === undefined) {
+      //   return res.status(400).json({ message: "Invalid feedback item structure" });
+      // }
 
       // Validate commodity exists
       // const commodityExists = await Commodity.find({ commodity_name: commodity });
