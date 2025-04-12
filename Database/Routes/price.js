@@ -282,48 +282,6 @@ router.post("/pricegenerate", async (req, res) => {
 });
 
 // PATCH API - Update SKU pricing
-router.patch("/pricegenerate/:sku_code", async (req, res) => {
-  try {
-    const { sku_code } = req.params;
-    const { min_bag_price, max_bag_price } = req.body;
-
-    if (min_bag_price !== undefined && min_bag_price < 0) {
-      return res.status(400).json({ message: "min_bag_price must be non-negative" });
-    }
-
-    if (max_bag_price !== undefined && max_bag_price < 0) {
-      return res.status(400).json({ message: "max_bag_price must be non-negative" });
-    }
-
-    if (
-      min_bag_price !== undefined &&
-      max_bag_price !== undefined &&
-      min_bag_price > max_bag_price
-    ) {
-      return res.status(400).json({
-        message: "min_bag_price cannot be greater than max_bag_price",
-      });
-    }
-
-    const updatedSku = await CommoditySkuPricing.findOneAndUpdate(
-      { sku_code },
-      { $set: { min_bag_price, max_bag_price } },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedSku) {
-      return res.status(404).json({ message: "SKU not found" });
-    }
-
-    res.json({ message: "Pricing updated successfully", data: updatedSku });
-  } catch (error) {
-    console.error("Error updating pricing:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-
-// GET API - Fetch SKU pricing
 router.get("/test/pricegenerate", async (req, res) => {
   console.log(req.query);
   try {
@@ -388,6 +346,7 @@ router.get("/test/pricegenerate", async (req, res) => {
       pitchedPayload = {
         date: localDateString,
         shop_Name: firstOrder.Shop_Name,
+        buyer_Name: firstOrder.Buyer_Name || "",
         shop_Number: firstOrder.Shop_Number || "",
         Market: firstOrder.Market || "",
         contact_Details: [contact],
@@ -436,7 +395,6 @@ router.get("/test/pricegenerate", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
 
 
 module.exports = router;
