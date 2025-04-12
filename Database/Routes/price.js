@@ -325,9 +325,9 @@ router.patch("/pricegenerate/:sku_code", async (req, res) => {
 
 // GET API - Fetch SKU pricing
 router.get("/test/pricegenerate", async (req, res) => {
-  console.log(req.query)
+  console.log(req.query);
   try {
-    const { commodity_name, sku_name,  contact } = req.query;
+    const { commodity_name, sku_name, contact } = req.query;
 
     if (!commodity_name || !sku_name || !contact) {
       return res.status(400).json({ message: "Missing required parameters" });
@@ -339,83 +339,53 @@ router.get("/test/pricegenerate", async (req, res) => {
       return res.status(404).json({ message: "Pricing details not found" });
     }
 
-    // function calculatePrice(quantity) {
-      const max = pricingData.max_bag_price;
-      const min = pricingData.min_bag_price;
-      // const minQty = pricingData.min_bag_quantity;
-      // const maxQty = pricingData.max_bag_quantity;
+    const max = pricingData.max_bag_price;
+    const min = pricingData.min_bag_price;
+    const finalPrice = max;
 
-      // const qty = parseInt(quantity);
-
-      // if (qty < minQty) return null;
-
-      // const deltaQty = Math.abs(qty - maxQty);
-      // const deltaPrice = (max - min) / (maxQty - minQty);
-
-      // return (min + deltaQty * deltaPrice).toFixed(2);
-    // }
-
-    const finalPrice = max
-    // calculatePrice(bag);
     if (finalPrice === null) {
       return res.status(400).json({ message: "Quantity is below minimum threshold" });
     }
-    // Corrected Axios call
-    const response = await axios.get(`http://localhost:5000/api/${contact}`,
-    {
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer saudebazi`,
-                  },
-                }
-    );
+
+    const response = await axios.get(`http://localhost:5000/api/${contact}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer saudebazi`,
+      },
+    });
+
     const orders = response.data.orders || [];
-    // console.log(orders)
 
-
-      // Filter orders
-      const filteredOrders = orders.filter(order =>
-        order.Commodity.toLowerCase() === commodity_name.toLowerCase() &&
-        order.SKU.toLowerCase() === sku_name.toLowerCase()
+    const filteredOrders = orders.filter(order =>
+      order.Commodity.toLowerCase() === commodity_name.toLowerCase() &&
+      order.SKU.toLowerCase() === sku_name.toLowerCase()
     );
 
-    // Calculate total interest credit from filtered orders
-const totalInterestCredit = filteredOrders.reduce((sum, order) => {
-  return sum + (parseFloat(order.intrest_credit) || 0);
-}, 0);
+    const totalInterestCredit = filteredOrders.reduce((sum, order) => {
+      return sum + (parseFloat(order.intrest_credit) || 0);
+    }, 0);
 
-console.log(totalInterestCredit)
+    const totalAOV = filteredOrders.reduce((sum, order) => {
+      return sum + (parseFloat(order.AOV) || 0);
+    }, 0);
 
-// Assuming each order has an `aov` field
-const totalAOV = filteredOrders.reduce((sum, order) => {
-  return sum + (parseFloat(order.AOV) || 0);
-}, 0);
+    const totalKg = filteredOrders.reduce((sum, order) => sum + (order.Total_Kg || 0), 0);
 
-console.log(totalAOV)
+    const volumeDiscount = (max - min) / totalKg;
+    const fx = max + totalInterestCredit - volumeDiscount;
 
-    // Sum of Avg_kg_order_commodity = Total Kg of matching orders
-const totalKg = filteredOrders.reduce((sum, order) => sum + (order.Total_Kg || 0), 0);
+    const quantity_Pitched = totalAOV / (fx * 30);
 
-volumeDiscount = (max-min)/totalKg
-const fx = max + totalInterestCredit - volumeDiscount;
+    let pitchedPayload = {};
 
-quantity_Pitched = totalAOV/(fx*30)
-// console.log("quantity",quantity_Pitched)
-
-const date = new Date(filteredOrders[0].Date);
-const localDateString = date.toLocaleString("en-IN", {
-  timeZone: "Asia/Kolkata",
-});
-console.log("Local Date String:", localDateString);
-// console.log(date.toLocaleString());
-
-
-    // Axios POST to /pitched-pricing
     if (filteredOrders.length > 0) {
       const firstOrder = filteredOrders[0];
+      const date = new Date(firstOrder.Date);
+      const localDateString = date.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+      });
 
-      const pitchedPayload = {
+      pitchedPayload = {
         date: localDateString,
         shop_Name: firstOrder.Shop_Name,
         shop_Number: firstOrder.Shop_Number || "",
@@ -424,18 +394,19 @@ console.log("Local Date String:", localDateString);
         commodity_name,
         sku_name,
         fx: `${Math.round(fx)} Rs/kg`,
-        quantityPitched: `${Math.round(quantity_Pitched+ 1)} bag(s)`,
+        quantityPitched: `${Math.round(quantity_Pitched + 1)} bag(s)`,
         transport_Expenses: firstOrder.Transport_Expenses || "",
         unloading_Charges: firstOrder.Unloading_Charges || "",
-        unloading: firstOrder.Unloading|| "",
+        unloading: firstOrder.Unloading || "",
         payment_Terms: firstOrder.Payment_Terms || ""
       };
 
       console.log("Payload for pitched pricing:", pitchedPayload);
+
       try {
         const postResponse = await axios.post(
           `http://localhost:5000/api/add-template`,
-          pitchedPayload, // this is the request body
+          pitchedPayload,
           {
             headers: {
               "Content-Type": "application/json",
@@ -450,19 +421,9 @@ console.log("Local Date String:", localDateString);
     }
 
     res.json({
-      commodity_name,
-      sku_name,
-      // bag_quantity: bag,
-      fx: fx,
-      quantityPitched: quantity_Pitched, 
-      maximumPrice: max,
-      minimumPrice: min, 
-      totalKg,
-      volumeDiscount,
-      filtered_orders: filteredOrders,
-      orders_count: orders.length,
-      all_orders: orders,
+      pitchedPayload,
     });
+
   } catch (error) {
     console.error("Error fetching pricing:", error.message);
 
@@ -471,6 +432,7 @@ console.log("Local Date String:", localDateString);
         message: error.response.data.message || "Error from internal API",
       });
     }
+
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
