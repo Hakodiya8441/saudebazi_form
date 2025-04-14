@@ -11,6 +11,7 @@ const orderSchema = new mongoose.Schema({
     Commodity: { type: String },
     SKU: { type: String },
     Order_Details: { type: String },
+    Kg: { type: Number },
     Total_Kg: { type: Number },
     Total_Bags: { type: Number },
     Price: { type: Number },

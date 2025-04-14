@@ -128,7 +128,8 @@ router.get("/test/pricegenerate", async (req, res) => {
 
      console.log("Total AOV:", totalAOV);
 
-    const totalKg = filteredOrders.reduce((sum, order) => sum + (order.Total_Kg || 0), 0);
+    const totalKg = filteredOrders[0].Total_Kg;
+    console.log("Total Kg:", totalKg);
 
     const volumeDiscount = (max - min) / totalKg;
     const fx = max + totalInterestCredit - volumeDiscount;
