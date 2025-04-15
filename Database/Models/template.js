@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 
 const pitchedPricingSchema = new mongoose.Schema({
-  date: { type: String},
+  date: { type: String, },
   shop_Name: String,
   buyer_Name: String,
   shop_Number: String,

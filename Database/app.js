@@ -1,4 +1,5 @@
 const express = require("express");
+require('dotenv').config();
 require("./Config/db");
 const commodityRoutes = require("./Routes/CommodityRoutes");
 const customerRoutes = require("./Routes/CustomerRoutes");
@@ -26,6 +27,7 @@ console.log("Current Time (Asia/Kolkata):", currentTime);
 
 app.use(middleware);
 app.use(express.json());
+const PORT = process.env.PORT || 5000;
 
 // Use routes for different API endpoints
 app.use("/api", commodityRoutes);
@@ -42,4 +44,4 @@ app.use("/api", otpricingRoutes);
 app.use("/api", otorderRoutes);  // Mount the routes
 app.use("/api", template); // Mount the template routes
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+app.listen( PORT, () => console.log(`Server running on ${PORT}`));

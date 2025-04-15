@@ -1,15 +1,15 @@
-function calculateDiscount(quantity){
-const rates = [
-    {limit: 50, rate:0.25},//0.25
-    {limit: 100, rate:0.50},
-    {limit: 300, rate:0.75},
-    {limit: 500, rate:1},
-    {limit: 1000, rate:1.25},
-];
-const rate = rates.find(slab => quantity <= slab.limit).rate;
+// function calculateDiscount(quantity){
+// const rates = [
+//     {limit: 50, rate:0.25},//0.25
+//     {limit: 100, rate:0.50},
+//     {limit: 300, rate:0.75},
+//     {limit: 500, rate:1},
+//     {limit: 1000, rate:1.25},
+// ];
+// const rate = rates.find(slab => quantity <= slab.limit).rate;
 
-return quantity*rate;
-}
+// return quantity*rate;
+// }
 
 
 
@@ -29,5 +29,5 @@ return quantity*rate;
     return days*rate;
     }
 
-    module.exports = { calculateInterestCredit,calculateDiscount };
+    module.exports = { calculateInterestCredit };
 
