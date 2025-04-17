@@ -68,19 +68,19 @@ router.post("/pricegenerate", async (req, res) => {
   }
 });
 
-function calculateInterestCredit(days) {
-  const rates = [
-    { limit: 0, rate: 0 },
-    { limit: 5, rate: 0.50 },
-    { limit: 10, rate: 1 },
-    { limit: 15, rate: 1.50 },
-    { limit: 20, rate: 2 },
-    { limit: 25, rate: 2.50 },
-    { limit: 30, rate: 3 },
-  ];
-  const rate = rates.find(slab => days <= slab.limit)?.rate || rates[rates.length - 1].rate;
-  return days * rate;
-}
+// function calculateInterestCredit(days) {
+//   const rates = [
+//     { limit: 0, rate: 0 },
+//     { limit: 5, rate: 0.50 },
+//     { limit: 10, rate: 1 },
+//     { limit: 15, rate: 1.50 },
+//     { limit: 20, rate: 2 },
+//     { limit: 25, rate: 2.50 },
+//     { limit: 30, rate: 3 },
+//   ];
+//   const rate = rates.find(slab => days <= slab.limit)?.rate || rates[rates.length - 1].rate;
+//   return days * rate;
+// }
 
 
 function calculateInterestCredit(days) {
