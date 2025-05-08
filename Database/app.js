@@ -15,6 +15,7 @@ const shopStatsRoutes = require("./Routes/shopStats"); // Import the shopStatsRo
 const otpricingRoutes = require("./Routes/price"); // Import the pricing routes
 const otorderRoutes = require("./Routes/shopStats"); // Import your order routes
 const template = require("./Routes/templateRoutes");
+ 
 
 const app = express();
 

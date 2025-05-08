@@ -5,44 +5,55 @@ const PitchedPricing = require("../Models/template"); // adjust path as needed
 router.post("/add-template", async (req, res) => {
   try {
     const {
-      date ,
+      pitchedPayload
+    } = req.body;
+
+    if (!pitchedPayload) {
+      return res.status(400).json({ message: "Missing pitchedPayload" });
+    }
+
+    const {
+      date,
+      time,
       shop_Name,
+      buyer_Name,
       shop_Number,
       Market,
       contact_Details,
-      commodity_name,
-      sku_name,
-      fx,
-      quantityPitched,
+      payment_Terms,
+      commoditySkuDetails,
       transport_Expenses,
       unloading_Charges,
-      unloading,
-      payment_Terms
-    } = req.body;
+      unloading
+    } = pitchedPayload;
 
-    // Optional: Validate required fields
-    if (!shop_Name || !commodity_name || !sku_name || fx === undefined || quantityPitched === undefined) {
+    // Validate required fields
+    if (!shop_Name || !commoditySkuDetails || !Array.isArray(commoditySkuDetails) || commoditySkuDetails.length === 0) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+
     const newPricing = new PitchedPricing({
-      date: date || undefined, // Optional formatting
+      date,
+      time,
       shop_Name,
+      buyer_Name,
       shop_Number,
       Market,
       contact_Details,
-      commodity_name,
-      sku_name,
-      fx,
-      quantityPitched,
+      payment_Terms,
+      commoditySkuDetails,
       transport_Expenses,
       unloading_Charges,
-      unloading,
-      payment_Terms,
+      unloading
     });
 
     const savedPricing = await newPricing.save();
-    res.status(201).json({ message: "Pitched pricing saved", data: savedPricing });
+    res.status(201).json({
+      message: "Pitched pricing saved successfully",
+      data: savedPricing,
+    });
+
   } catch (error) {
     console.error("Error saving pitched pricing:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
