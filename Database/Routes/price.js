@@ -107,7 +107,7 @@ router.get("/test/pricegenerate", async (req, res) => {
       : (sku_name?.split(",") || []);
 
     // Fetch orders for the contact
-    const response = await axios.get(`http://localhost:5000/api/${contact}`, {
+    const response = await axios.get(`https://saudebazi-form.onrender.com/api/${contact}`, {
       headers: { "Content-Type": "application/json",
       Authorization: `Bearer saudebazi`,
        },
@@ -132,6 +132,7 @@ router.get("/test/pricegenerate", async (req, res) => {
         ) || orders[0];
 
         if (!orderToUse) continue;
+       
 
         const pricingData = await CommoditySkuPricing.findOne({
           commodity_name: new RegExp(`^${commodity}$`, "i"),
@@ -151,6 +152,7 @@ router.get("/test/pricegenerate", async (req, res) => {
         const totalInterest = calculateInterestCredit(totalInterestCredit);
 
         const totalTransactionValue = parseFloat(orderToUse.SUM_of_Total_Transaction_value) || 0;
+
         const noOfOrders = orderToUse.No_of_Order || relevantOrders.length || 1;
         const totalAOV = totalTransactionValue / noOfOrders;
 
@@ -204,7 +206,7 @@ router.get("/test/pricegenerate", async (req, res) => {
 
     try {
       const postResponse = await axios.post(
-        `http://localhost:5000/api/add-template`,
+        `https://saudebazi-form.onrender.com/api/add-template`,
         {pitchedPayload},
         { headers: { "Content-Type": "application/json",
         Authorization: `Bearer saudebazi`,
