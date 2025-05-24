@@ -107,7 +107,7 @@ router.get("/test/pricegenerate", async (req, res) => {
       : (sku_name?.split(",") || []);
 
     // Fetch orders for the contact
-    const response = await axios.get(`https://saudebazi-form.onrender.com/api/${contact}`, {
+    const response = await axios.get(`http://localhost:5000/api/${contact}`, {
       headers: { "Content-Type": "application/json",
       Authorization: `Bearer saudebazi`,
        },
@@ -157,6 +157,7 @@ router.get("/test/pricegenerate", async (req, res) => {
         const totalAOV = totalTransactionValue / noOfOrders;
 
         const totalKg = parseFloat(orderToUse.Total_Kg) || 1;
+        console.log("Total Kg:", totalKg);
         const volumeDiscount = (max - min) / totalKg;
         const fx = max + totalInterest - (volumeDiscount + 1);
 
@@ -181,7 +182,12 @@ router.get("/test/pricegenerate", async (req, res) => {
       }
     }
     const uniqueCommoditySkuDetails = Array.from(uniqueMap.values());
-    console.log("📦 Unique commodity SKU details:", JSON.stringify(uniqueCommoditySkuDetails));
+    // console.log("📦 Unique commodity SKU details:", JSON.stringify(uniqueCommoditySkuDetails));
+    // const test = JSON.stringify(uniqueCommoditySkuDetails);
+    // console.log( "📦 Unique commodity details:", test);
+
+    // const parse = JSON.parse(test);
+    // console.log("📦 Parsed unique commodity details:", parse[0].commodity_name);
 
     const orderDate = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");
     const orderTime = moment().tz("Asia/Kolkata").format("HH:mm:ss");
@@ -191,7 +197,7 @@ router.get("/test/pricegenerate", async (req, res) => {
       time: orderTime,
       shop_Name: orders[0]?.Shop_Name || "",
       buyer_Name: orders[0]?.Buyer_Name || "",
-      shop_Number: orders[0]?.Shop_Number || "",
+      shop_Number: orders[0]?.Shop_Number || "Empty",
       Market: orders[0]?.Market || "",
       contact_Details: [contact],
       payment_Terms: "Cash",
@@ -206,7 +212,7 @@ router.get("/test/pricegenerate", async (req, res) => {
 
     try {
       const postResponse = await axios.post(
-        `https://saudebazi-form.onrender.com/api/add-template`,
+        `http://localhost:5000/api/add-template`,
         {pitchedPayload},
         { headers: { "Content-Type": "application/json",
         Authorization: `Bearer saudebazi`,

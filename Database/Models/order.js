@@ -15,7 +15,6 @@ const orderSchema = new mongoose.Schema({
     Total_Kg: { type: Number },
     Total_Bags: { type: Number },
     Price: { type: Number },
-    Daily_Price: { type: Number },
     Total_Price: { type: Number },
     Transport_Expenses: { type: String },
     Unloading_Charges: { type: String },
@@ -30,10 +29,10 @@ const orderSchema = new mongoose.Schema({
     Volume: { type: Number },
     No_of_Order: { type: Number},
     No_of_Commodity: { type: Number},
-    Avg_kg_order_commodity:{ type: Number },
-    Volume_basis:{ type: Number },
-    Avg_transaction_value_order_commodity:{ type: Number },
-    Transaction_value_basis:{ type: Number },
+    // Avg_kg_order_commodity:{ type: Number },
+    // Volume_basis:{ type: Number },
+    // Avg_transaction_value_order_commodity:{ type: Number },
+    // Transaction_value_basis:{ type: Number },
     AOV:{ type: Number },
     Credit_intrest:{ type: Number }
 
